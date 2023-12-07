@@ -15,9 +15,6 @@ ans2 = 0
 #   Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
 #   One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
 #   High card, where all cards' labels are distinct: 23456
-handsSor = {"five" : [], "four" : [], "fullHouse" : [], "three" : [], "twoPair" : [],"onePair" : [], "high" : []}
-cnt = 0
-card_order_dict = {"2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "T":10,"J":1, "Q":12, "K":13, "A":14}
 
 def check_four_of_a_kind(hand):
     for c in hand:
@@ -94,7 +91,6 @@ def replaceJoker(hand):
         # jj + xx + y // xx + yy + j 
         if hand.count(-1) == 2:
             hand = replaceMaxCnt(hand)
-            print(handOld,hand)
         else:
             hand = replaceMax(hand)
     elif check_one_pairs(hand):
@@ -108,52 +104,61 @@ def replaceJoker(hand):
 
     return hand 
 
+def solve(prt):
+    ans = 0
+    handsSor = {"five" : [], "four" : [], "fullHouse" : [], "three" : [], "twoPair" : [],"onePair" : [], "high" : []}
+    cnt = 0
+    card_order_dict1 = {"2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "T":10,"J":11, "Q":12, "K":13, "A":14}
+    card_order_dict2 = {"2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "T":10,"J":1, "Q":12, "K":13, "A":14}
+    for l in lines:
+        cnt += 1
+        l = l.strip()
+        hand,bid = l.split()
+        # hand = sorted(hand,reverse=True)
+        # hand = [card_order_dict[c] for c in hand]
+        if(prt == 1):
+            hand = [card_order_dict1[c] for c in hand]
+        else:
+            hand = [card_order_dict2[c] for c in hand]
 
-for l in lines:
-    cnt += 1
-    l = l.strip()
-    hand,bid = l.split()
-    # hand = sorted(hand,reverse=True)
-    # hand = [card_order_dict[c] for c in hand]
-    hand = [card_order_dict[c] for c in hand]
-    handOld2 = copy.deepcopy(hand)
-    if(1 in hand):
-        hand = replaceJoker(hand)
-
-
-    if( len(list(set(hand))) == 1):
-        handsSor["five"].append((handOld2,hand,bid))
-    elif check_four_of_a_kind(hand):
-        handsSor["four"].append((handOld2,hand,bid))
-    elif check_full_house(hand):
-        handsSor["fullHouse"].append((handOld2,hand,bid))
-    elif check_three_of_a_kind(hand):
-        handsSor["three"].append((handOld2,hand,bid))
-    elif check_two_pairs(hand):
-        handsSor["twoPair"].append((handOld2,hand,bid))
-    elif check_one_pairs(hand):
-        handsSor["onePair"].append((handOld2,hand,bid))
-    else:
-        handsSor["high"].append((handOld2,hand,bid))
+        handOld2 = copy.deepcopy(hand)
+        if(1 in hand):
+            hand = replaceJoker(hand)
 
 
+        if( len(list(set(hand))) == 1):
+            handsSor["five"].append((handOld2,hand,bid))
+        elif check_four_of_a_kind(hand):
+            handsSor["four"].append((handOld2,hand,bid))
+        elif check_full_house(hand):
+            handsSor["fullHouse"].append((handOld2,hand,bid))
+        elif check_three_of_a_kind(hand):
+            handsSor["three"].append((handOld2,hand,bid))
+        elif check_two_pairs(hand):
+            handsSor["twoPair"].append((handOld2,hand,bid))
+        elif check_one_pairs(hand):
+            handsSor["onePair"].append((handOld2,hand,bid))
+        else:
+            handsSor["high"].append((handOld2,hand,bid))
 
 
-for h in handsSor:
-    # for x in range(len(handsSor[h])):
-    #     asdf = [card_order_dict[c] for c in handsSor[h][x][0]]
-    #     handsSor[h][x] = (asdf,handsSor[h][x][1])
-    sor = sorted(handsSor[h],reverse=True)
-        
-    # print(h,handsSor[h])
-    for xx in sor:
-        handold,hand,y = xx 
-        y = int(y)
-        ans1 += cnt*y 
-        # if 11 in handold:
-        #     print(h,xx)
-        cnt -= 1
 
+
+    for h in handsSor:
+        # for x in range(len(handsSor[h])):
+        #     asdf = [card_order_dict[c] for c in handsSor[h][x][0]]
+        #     handsSor[h][x] = (asdf,handsSor[h][x][1])
+        sor = sorted(handsSor[h],reverse=True)
+            
+        # print(h,handsSor[h])
+        for xx in sor:
+            handold,hand,y = xx 
+            y = int(y)
+            ans += cnt*y 
+            # if 11 in handold:
+            #     print(h,xx)
+            cnt -= 1
+    return ans
 
 
 #ans2 != 253704057
@@ -169,6 +174,6 @@ for h in handsSor:
 #ans2 != 253157581
 
 print("----------")
-print("ans1:",ans1,254024898)
-print("ans2:",ans2)
+print("ans1:",solve(1))
+print("ans2:",solve(2))
 
