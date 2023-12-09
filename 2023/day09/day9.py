@@ -16,10 +16,14 @@ for l in lines:
     l = l.strip()
     nums = [int(x) for x in l.split()]
     ansans = [nums]
+    xo = 0
     while len(set(nums)) != 1 and set(nums) != 0:
+        xo += 1
         nums2 = [(nums[i] - nums[i - 1]) for i in range(1, len(nums))]
         ansans.append(nums2)
         nums = nums2
+        if xo > 1000000:
+            break
     x = ansans[0][-1]
     y = 0
     lastY = 0
@@ -39,6 +43,7 @@ for l in lines:
             left = right - bottom
         ansans[i - 1] = [left] + ansans[i - 1]
 
+    print(l, "--", x)
     ans1arr.append(x)
     ans2arr.append(ansans[0][0])
 
