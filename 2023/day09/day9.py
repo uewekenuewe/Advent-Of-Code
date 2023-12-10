@@ -3,6 +3,7 @@ import copy
 import networkx as nx
 
 
+
 # file = open("9ex.in", "r")
 file = open("9.in", "r")
 lines = file.readlines()
