@@ -1,9 +1,8 @@
-# Using readlines()
 import re
 import math
 import sys
 import numpy as np
-
+import copy 
 ans1 = 0
 ans2 = 0
 
