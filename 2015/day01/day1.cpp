@@ -8,10 +8,22 @@ using namespace std;
 
 const char *alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-void run_case() {
-  string s = "";
-  cin >> s;
-  cout << s << endl;
-}
 
-int main() {}
+int main() {
+	string s;
+	cin >> s;
+	ll ans1 = 0;
+	ll ans2 = 0;
+	for(int i = 0; i < s.size(); i++){
+		if(s[i] == '(')
+			ans1++;
+		else 
+			ans1--;
+		if(ans1 == -1 && ans2 == 0)
+			ans2 = i;
+	}
+
+	cout << "ans1: " << ans1 << endl ;
+	cout << "ans2: " << ans2 << endl ;
+
+}
