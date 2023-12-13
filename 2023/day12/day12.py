@@ -9,46 +9,68 @@ ans2 = 0
 
 F = open(sys.argv[1], "r")
 lines = [l.strip() for l in F.readlines()]
-springs = []
-order = []
-SO = []
 
-def valid(inp,o):
-    if inp.count("#") != sum(o):
-        return False 
-    
-
-def solve(inp):
-    s,o = inp 
-    segs = []
+def getSeg(inp):
+    seg = []
     temp = ""
-    r = []
-    for c in s:
+    for c in inp:
         if c != ".":
             temp += c 
         else: 
             if temp != "":
-                segs.append(temp)
-                temp = ""
+                seg.append(temp)
+            temp = ""
     if temp != "":
-        segs.append(temp)
-    for c in combinations("ABCD",2):
-        print(c)
+        seg.append(temp)
 
-    print(segs,r)
+    return seg
 
-        
+def getPermut(inp,arrangements):
+    r = [inp]
+    cnt = sum(arrangements)
+    for _ in range(inp.count("?")):
+        r2 = []
+        for x in r:
+            x1 = x.replace("?","#",1)
+            x2 = x.replace("?",".",1)
+            if _ == inp.count("?")-1:
+                if x1.count("#") == cnt:
+                    r2.append(x1)
+                if x2.count("#") == cnt:                    
+                    r2.append(x2)
+            else:
+                r2.append(x1)
+                r2.append(x2)
+        r = r2 
+    r2 = []
+    for res in r:
+        segs = getSeg(res) 
+        if len(segs) == len(arrangements):
+            finalAdd = True
+            for i in range(len(segs)):
+                if len(segs[i]) != arrangements[i]:
+                    finalAdd = False 
+            if finalAdd:
+                r2.append(res)
+    r = r2 
+    return r
+
 
 for l in lines:
-    print(l)
-    S,O = l.split()
-    springs.append(S)
-    order.append(O.split())
-    (solve((S,O)))
-    SO.append((springs[-1],order[-1]))
+    # PART 1
+    s,arrangements = l.split()
+    arrangements = [int(x) for x in arrangements.split(",")]
+    ans1+= len(getPermut(s,arrangements))
 
-for s in SO:
-    print(s)
+
+    # PART 1 
+    # MAP = {}
+    # s = s + "?" + s + "?" + s + "?" + s + "?" + s
+    # arrangements = arrangements + arrangements + arrangements + arrangements + arrangements
+
+    # ans2+= len(getPermut(s,arrangements))
+
+
 
 print("------")
 print("ans1:", ans1)
