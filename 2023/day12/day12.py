@@ -36,10 +36,6 @@ def getKey(inp,arrangements):
     return r
 
 def getPermut(inp,arrangements):
-    key = getKey(inp,arrangements)
-    if key in CACH.keys():
-        return CACH[key]
-    else:
         r = [inp]
         cnt = sum(arrangements)
         for _ in range(inp.count("?")):
@@ -67,11 +63,7 @@ def getPermut(inp,arrangements):
                 if finalAdd:
                     r2.append(res)
         r = r2 
-        CACH[key] = r
         return r
-
-def solvePrt2(inp,arrangements):
-    
 
 
 for l in lines:
@@ -79,17 +71,13 @@ for l in lines:
     arrangements = [int(x) for x in arrangements.split(",")]
     
     # PART 1
-    #ans1+= len(getPermut(s,arrangements))
+    ans1+= len(getPermut(s,arrangements))
 
     # PART 2 
     s = s + "?" + s + "?" + s + "?" + s + "?" + s
     arrangements = arrangements + arrangements + arrangements + arrangements + arrangements
 
     #ans2+= len(getPermut(s,arrangements))
-
-print("----")
-print(getPermut("???",[1,1]),len(getPermut("???",[1,1])))
-print(getPermut("???",[1]),len(getPermut("???",[1])))
 
 print("------")
 print("ans1:", ans1)
