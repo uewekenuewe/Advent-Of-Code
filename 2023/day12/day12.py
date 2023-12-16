@@ -84,18 +84,21 @@ def resolve(inp,arrangements):
     if len(arrangements) == 0: # and inp == "":
         # rechene möglichkeiten ?? + 1 ==> 
         return 1
+    if len(arrangements) == 1 and inp.count("#") == arrangements[0]:
+        return 1 
 
 
     if inp[0] in ["#","?"]:
         if len(arrangements) > 1:
+            # rufe rekusion auf für 
             r += resolve(inp[:arrangements[0]+1],[arrangements[0]])
             r += resolve(inp[arrangements[0]+1:],arrangements[1:])
 
     else:
+        # schneide Punkte ab 
         r += resolve(inp[1:],arrangements)
 
 
-    return r
 
 def nth_repl(s, sub, repl, n):
     find = s.find(sub)
