@@ -36,83 +36,56 @@ def getKey(inp,arrangements):
     return r
 
 def getPermut(inp,arrangements):
-        kk = getKey(inp,arrangements)
-        if kk in CACH.keys():
-            return CACH[kk]
-        else:
-            r = [inp]
-            cnt = sum(arrangements)
-            for _ in range(inp.count("?")):
-                r2 = []
-                for x in r:
-                    x1 = x.replace("?","#",1)
-                    x2 = x.replace("?",".",1)
-                    if _ == inp.count("?")-1:
-                        if x1.count("#") == cnt:
-                            r2.append(x1)
-                        if x2.count("#") == cnt:                    
-                            r2.append(x2)
-                    else:
-                        r2.append(x1)
-                        r2.append(x2)
-                r = r2 
-            r2 = []
-            for res in r:
-                segs = getSeg(res) 
-                if len(segs) == len(arrangements):
-                    finalAdd = True
-                    for i in range(len(segs)):
-                        if len(segs[i]) != arrangements[i]:
-                            finalAdd = False 
-                    if finalAdd:
-                        r2.append(res)
-            r = r2 
-            if len(r) == 0:
-                CACH[kk] = 1
-                return 1 
+    r = [inp]
+    cnt = sum(arrangements)
+    for _ in range(inp.count("?")):
+        r2 = []
+        for x in r:
+            x1 = x.replace("?","#",1)
+            x2 = x.replace("?",".",1)
+            if _ == inp.count("?")-1:
+                if x1.count("#") == cnt:
+                    r2.append(x1)
+                if x2.count("#") == cnt:                    
+                    r2.append(x2)
             else:
-                CACH[kk] = len(r)
-                return len(r)
+                r2.append(x1)
+                r2.append(x2)
+        r = r2 
+    r2 = []
+    for res in r:
+        segs = getSeg(res) 
+        if len(segs) == len(arrangements):
+            finalAdd = True
+            for i in range(len(segs)):
+                if len(segs[i]) != arrangements[i]:
+                    finalAdd = False 
+            if finalAdd:
+                r2.append(res)
+    r = r2 
+    return len(r)
 
 def resolve(inp,arrangements):
-    r = 0
+    r = 1
     print(inp,arrangements)
-    if inp.count("#") > 0 and len(arrangements) == 0:
-        return 0 
-    if inp == "":
-        return 0 
-    if len(arrangements) == 0: # and inp == "":
-        # rechene möglichkeiten ?? + 1 ==> 
-        return 1
-    if len(arrangements) == 1 and inp.count("#") == arrangements[0]:
-        return 1 
+    if len(arrangements) == 1:
+        if not inp in CACH.keys():
+            CACH[inp] = getPermut(inp,arrangements)
+        return CACH[inp]
 
 
     if inp[0] in ["#","?"]:
         if len(arrangements) > 1:
             # rufe rekusion auf für 
-            r += resolve(inp[:arrangements[0]+1],[arrangements[0]])
-            r += resolve(inp[arrangements[0]+1:],arrangements[1:])
+            r *= resolve(inp[:arrangements[0]],[arrangements[0]])
+            r *= resolve(inp[arrangements[0]+1:],arrangements[1:])
 
     else:
         # schneide Punkte ab 
-        r += resolve(inp[1:],arrangements)
+        r *= resolve(inp[1:],arrangements)
 
-
-
-def nth_repl(s, sub, repl, n):
-    find = s.find(sub)
-    # If find is not -1 we have found at least one match for the substring
-    i = find != -1
-    # loop util we find the nth or we find no match
-    while find != -1 and i != n:
-        # find + 1 means we start searching from after the last match
-        find = s.find(sub, find + 1)
-        i += 1
-    # If i is equal to n we found nth match so replace
-    if i == n:
-        return s[:find] + repl + s[find+len(sub):]
-    return s      
+    return r
+   
 
 for l in lines:
     s,arrangements = l.split()
