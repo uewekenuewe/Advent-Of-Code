@@ -22,44 +22,7 @@ for l in lines:
         arr = []
 pat.append(np.array(arr))
 
-
-rows = 0
-cols = 0
-
-def getBest(inp):
-    if len(inp) == 0:
-        return (0,0)
-    maxAbs = -1
-    maxAbsInd = -1
-    for i,x in enumerate(inp):
-        if abs(x[0]-x[1]) > maxAbs:
-            maxAbs = abs(x[0]-x[1])
-            maxInd = i
-    return inp[maxInd]
-
-def checkReflection(inp,l,r):
-    if (abs(l-r)+1) % 2 == 1:
-        return False
-    for i in range(abs(l-r)):
-        left = l + i
-        right = r - i
-        if not (inp[left] == inp[right]).all():
-            return False
-    return True
-
-def cntDiff(l1,l2):
-    r = 0
-    for i in range(len(l1)):
-        if l1[i] != l2[i]:
-            r += 1
-    return r
-
-colsAns1 = 0
-colsAns2 = 0
-rowsAns1 = 0
-rowsAns2 = 0
-
-def expand(p,l,r):
+def expand1(p,l,r):
     if l == 0 or r == len(p)-1:
         return True 
     else:
@@ -70,33 +33,65 @@ def expand(p,l,r):
                 return False 
     return True
 
-def findSmudge(inp):
-    inp_T = np.transpose(inp)
-    xo = 0
-    # zeilen
-    for i in range(len(inp)-1):
-        if np.count_nonzero((inp[i] != inp[0])) == 1:
-            xo += 1 
-    for i in range(len(inp_T)-1):
-        if np.count_nonzero((inp_T[i] != inp_T)) == 1:
-            xo += 1
+def expand2(p,l,r):
+    smug = 0
+    for i in range(min(abs(l),abs(r-len(p)+1))):
+        l-=1 
+        r+=1 
+        if np.count_nonzero(p[l] != p[r]) > 1:
+            return False 
+        elif np.count_nonzero(p[l] != p[r]) == 1:
+            smug+=1 
+        if smug > 1:
+            return False 
+    if smug != 1:
+        return False 
+    return True
 
-    return(xo )
+
+colsAns1 = 0
+colsAns2 = 0
+rowsAns1 = 0
+rowsAns2 = 0
 
 
 for x,p in enumerate(pat):
     p_T = np.transpose(p)
-    smudge = 0
+    rr = []
+    cc = []
+
+    # PART -- 1
     for i in range(len(p)-1):
-        if (p[i] == p[i+1]).all() and expand(p,i,i+1):
+        if (p[i] == p[i+1]).all() and expand1(p,i,i+1):
             rowsAns1 += i+1
     for i in range(len(p_T)-1):
-        if (p_T[i] == p_T[i+1]).all() and expand(p_T,i,i+1):
+        if (p_T[i] == p_T[i+1]).all() and expand1(p_T,i,i+1):
             colsAns1 += i+1
 
+    # PART -- 2
+    for i in range(len(p)-1):
+        if( np.count_nonzero(p[i] != p[i+1]) == 1) and expand1(p,i,i+1):
+            rr.append(i+1)
+            rowsAns2 += i+1
+        elif( (p[i] == p[i+1]).all() and expand2(p,i,i+1)):
+            rr.append(i+1)
+            rowsAns2 += i+1
+
+    for i in range(len(p_T)-1):
+        if( np.count_nonzero(p_T[i] != p_T[i+1]) == 1) and expand1(p_T,i,i+1):
+            cc.append(i+1)
+            colsAns2 += i+1
+        elif( (p_T[i] == p_T[i+1]).all() and expand2(p_T,i,i+1)):
+            cc.append(i+1)
+            colsAns2 += i+1        
     
+    print(rr,cc)
 ans1 = colsAns1 + 100 * rowsAns1
 ans2 = colsAns2 + 100 * rowsAns2
 print("------")
 print("ans1:", ans1, ans1==27664)
-print("ans2:", ans2)
+print("ans2:", ans2, ans2==30842)
+
+# ans2 = 33608 falsch
+# ans2 = 45013 falsch
+# ans2 = 45487 falsch

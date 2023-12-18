@@ -6,6 +6,10 @@ import copy
 from itertools import combinations
 import copy
 import networkx as nx
+import shapely
+import matplotlib.pyplot as plt
+import geopandas as gpd
+from shapely.geometry import Point
 
 
 F = open(sys.argv[1], "r")
@@ -21,81 +25,52 @@ for l in lines:
     dig.append(l.split())
 
 digger = [0,0]
-maxX = -1
-minX = 99999
-maxY = -1
-minY = 99999
-cords = []
+cords = [(0,0)]
+s = 0
 for d in dig:
     direction,length,color = d 
     length = int(length)
-
-    if direction == "R":
-        for i in range(digger[1],digger[1]+length):
-            cords.append((digger[0],i))
+    if direction == "R":    
         digger[1] += length
     if direction == "D":
-        for i in range(digger[0],digger[0]+length):
-            cords.append((i,digger[1]))     
         digger[0] += length 
     if direction == "L":
-        for i in range(digger[1],digger[1]-length,-1):
-            cords.append((digger[0],i))           
         digger[1] -= length 
     if direction == "U":
-        for i in range(digger[0],digger[0]-length,-1):
-            cords.append((i,digger[1]))           
         digger[0] -= length
-    
+    s+=length
+    cords.append((digger[0],digger[1]))
+
+def edgePara(edge1,edge2):
+    (s1x,s1y),(e1x,e1y) = edge1 
+    (s2x,s2y),(e2x,e2y) = edge2 
+    return ((s1x == e1x) and (s2x == e2x)) or ((s1y == e1y) and (s2y == e2y))
+
+#
+# the formula to find the area of a polygon with n sides is:(n * s^2) / (4 * tan(π/n))
+# Where:
+#  n  is the number of sides of the polygon.
+# s is the length of each side of the polygon.This formula is known as the Heron's formula. It is only valid for convex polygons. If the polygon is not convex, the area can not be calculated using this formula.
+# n Formula is Area=∣∣∣(x1y2−y1x2)+(x2y3−y2x3)...(xny1−ynx1)2∣∣∣
+# where xn
+#  is the x
+#  coordinate of the vertex n
+# , yn
+#  is the y
+#  coordinate of the vertex n
+
+edges = []
+ans = 0 
+for i in range(1,len(cords)):
+    edges.append((cords[i-1],cords[i]))
+    (x1,y1) = cords[i-1] 
+    (x2,y2) = cords[i]
+    ans += (x1*y2-y1*x2)
+
+ans = abs(ans/2) 
 
 
-    maxX = max(maxX,digger[0])
-    minX = min(minX,digger[0])
-    minY = min(minY,digger[1])
-    maxY = max(maxY,digger[1])
-
-
-
-print(minX,minY,maxX,maxY)
-m2 = np.array([["." for i in range(abs(minY-maxY)+1)] for k in range(abs(minX-maxX)+1)])
-
-m = copy.deepcopy(m2)
-
-print(m.shape)
-
-edge = []
-
-ans1 = 0
-for c in cords:
-    x,y = c 
-    m[x+abs(minX)][y+abs(minY)] = "#"
-    edge.append((x+abs(minX),y+abs(minY)))
-
-
-openClose = False
-for i in range(len(m)):
-    ind = 0
-    x = "".join(m[i])
-    while(x.find("#",ind) != -1):
-        first = x.find("#",ind)
-        last = x.find("#",first+1)
-        ans1+= abs(first-last+1)
-        ind = last+1
-        print(x,first,last,x[first:last+1])
-        if last == -1:
-            break
-
-
-for l in m:
-    print(l)
-
-
-# 62114 to high
-print(np.count_nonzero(m == "#"))
-print("ans1:",ans1)
-
-
-# -186 -288 88 200
-# (275, 489)
-# 3662
-# ans1: 98253
+# n = len(edges)
+# s = 6
+# ans = (n * s^2) / (4 * math.tan(math.pi/n))
+print(ans)
