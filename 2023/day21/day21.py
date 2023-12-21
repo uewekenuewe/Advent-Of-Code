@@ -28,36 +28,34 @@ i = 0
 rang = 64
 gridValue = 0
 main = [0,0]
-for _ in range(rang):
-    while(len(que)>0):
-        x,y = que.pop(0)
-        if m[x][y] != "#":
-            for dx,dy in d:
-                if 0<=dx+x<len(m) and 0<=dy+y<len(m[0]) and m2[dx+x][dy+y] != "O" and m[dx+x][dy+y] != "#":
-                    m2[dx+x][dy+y] = "O"
-    for i in range(len(m2)):
-        for k in range(len(m2[0])):
-            if m2[i][k] == "O":
-                que.append((i,k))
-    if _ != rang-1:
-        gridValue = np.count_nonzero(m2 == "O")
-        m2 = copy.deepcopy(m)
-    else:
-        print(gridValue)
-# ----
-# %2 == 1 , %2 == 0
-print(main)
+def expand(matrix,steps):
+    matrixCopy = copy.deepcopy(matrix)
 
+    for _ in range(steps):
+        while(len(que)>0):
+            x,y = que.pop(0)
+            if matrix[x][y] != "#":
+                for dx,dy in d:
+                    if 0<=dx+x<len(matrix) and 0<=dy+y<len(matrix[0]) and matrixCopy[dx+x][dy+y] != "O" and matrix[dx+x][dy+y] != "#":
+                        matrixCopy[dx+x][dy+y] = "O"
+        for i in range(len(matrixCopy)):
+            for k in range(len(matrixCopy[0])):
+                if matrixCopy[i][k] == "O":
+                    que.append((i,k))
+        if _ != steps-1:
+            matrixCopy = copy.deepcopy(matrix)
+        else:
+            return np.count_nonzero(matrixCopy=="O")
 
-for l in m2:
-    print(l)
+# for l in m2:
+#     print("".join(l))
 
-for i in range(len(m2)):
-    for k in range(len(m2[0])):
-        if m2[i][k] == "O":
-            ans1 += 1
+# for i in range(len(m2)):
+#     for k in range(len(m2[0])):
+#         if m2[i][k] == "O":
+#             ans1 += 1
 
-ans1 = len(que)
+ans1 = expand(m,64)
 
 
 print("------")
