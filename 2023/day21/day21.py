@@ -21,10 +21,14 @@ m = np.array(m)
 m2 = copy.deepcopy(np.array(m))
 d = [(1,0),(0,1),(-1,0),(0,-1)]
 
-que = [s]
+que = []
+for i in range(1,len(m[0]),2):
+    que.append((0,i))
 vis = []
 i = 0
-rang = 64
+rang = 500
+gridValue = 0
+main = [0,0]
 for _ in range(rang):
     while(len(que)>0):
         x,y = que.pop(0)
@@ -37,9 +41,23 @@ for _ in range(rang):
             if m2[i][k] == "O":
                 que.append((i,k))
     if _ != rang-1:
+        gridValue = np.count_nonzero(m2 == "O")
+        print(_)
+        if _%2 == 1:
+            if main[0] != gridValue:
+                main[0] = gridValue 
+            else:
+                break
+        else:
+            if main[1] != gridValue: 
+                main[1] = gridValue
+            else:
+                break
+
         m2 = copy.deepcopy(m)
-
-
+# ----
+# %2 == 1 , %2 == 0
+print(main)
 
 
 for l in m2:
