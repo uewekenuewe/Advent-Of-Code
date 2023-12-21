@@ -45,15 +45,13 @@ def expand(matrix,steps):
         if _ != steps-1:
             matrixCopy = copy.deepcopy(matrix)
         else:
+            m2 = matrixCopy
             return np.count_nonzero(matrixCopy=="O")
 
-# for l in m2:
-#     print("".join(l))
+for l in m2:
+    print("".join(l))
 
-# for i in range(len(m2)):
-#     for k in range(len(m2[0])):
-#         if m2[i][k] == "O":
-#             ans1 += 1
+
 
 ans1 = expand(m,64)
 
