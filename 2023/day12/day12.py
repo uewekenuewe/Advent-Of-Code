@@ -65,27 +65,27 @@ def getPermut(inp,arrangements):
     r = r2 
     return len(r)
 
-def resolve(inp,arrangements):
-    r = 1
-    print(inp,arrangements)
-    if len(arrangements) == 1:
-        if not inp in CACH.keys():
-            CACH[inp] = getPermut(inp,arrangements)
-        return CACH[inp]
+def count_arrangements(conditions, rules):
+    if not rules:
+        return 0 if "#" in conditions else 1
+    if not conditions:
+        return 1 if not rules else 0
 
+    result = 0
 
-    if inp[0] in ["#","?"]:
-        if len(arrangements) > 1:
-            # rufe rekusion auf für 
-            r *= resolve(inp[:arrangements[0]],[arrangements[0]])
-            r *= resolve(inp[arrangements[0]+1:],arrangements[1:])
+    if conditions[0] in ".?":
+        result += count_arrangements(conditions[1:], rules)
+    if conditions[0] in "#?":
+        if (
+            rules[0] <= len(conditions)
+            and "." not in conditions[: rules[0]]
+            and (rules[0] == len(conditions) or conditions[rules[0]] != "#")
+        ):
+            result += count_arrangements(conditions[rules[0] + 1 :], rules[1:])
+    return result
 
-    else:
-        # schneide Punkte ab 
-        r *= resolve(inp[1:],arrangements)
-
-    return r
-   
+ 
+  
 
 for l in lines:
     s,arrangements = l.split()
@@ -93,13 +93,12 @@ for l in lines:
     
     # PART 1
     #ans1+= len(getPermut(s,arrangements))
-    print(s,arrangements,resolve(s,arrangements))
 
     # PART 2 
     s = s + "?" + s + "?" + s + "?" + s + "?" + s
     arrangements = arrangements + arrangements + arrangements + arrangements + arrangements
 
-    #ans2+= len(getPermut(s,arrangements))
+    ans2+= (count_arrangements(s,arrangements))
 
 print("------")
 print("ans1:", ans1,ans1 == 6871)

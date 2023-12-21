@@ -17,38 +17,43 @@ for l in lines:
     m.append([int(x) for x in l])
 
 m = np.array(m)
-m2 = [[(float("inf"),(0,0)) for x in range(len(m[0]))] for _ in range(len(m))]
+mVis = np.array([["#" for i in range(len(m[0]))] for k in range(len(m))])
+mw = np.array([[float("inf") for i in range(len(m[0]))] for k in range(len(m))])
+move = [[(0,0) for i in range(len(m[0]))] for k in range(len(m))]
+print(m.shape,mw.shape)
 D = [(1,0),(-1,0),(0,1),(0,-1)]
 
-edges = []
-points = []
-for i in range(len(m)):
-    for k in range(len(m[0])):
-        points.append((i,k))
-        for dd in D:
-            dx,dy = dd 
-            if 0<=i+dx<len(m) and 0<=k+dy<len(m[0]):
-                w = m[i+dx][k+dy]
-                edges.append(((i,k),(i+dx,k+dy),m[i+dx][k+dy]))
+def invert(p):
+    return [p[0]*-1,p[1]*-1]
 
 que = [(0,0)]
-m2[0][0] = (0,(0,0))
 vis = []
-while(len(que) > 0):
-    p = que.pop(0)
-    x,y = p 
-    if not p in vis:
-        vis.append(p)
-        for dd in D:
-            dx,dy = dd 
-            dx += x 
-            dy += y 
-            if 0<=dx<len(m) and 0<=dy<len(m[0]):
-                wToadd = m2[x][y][0] + m[dx][dy]
-                if m2[dx][dy][0] > wToadd:
-                    m2[dx][dy] = (wToadd,(x,y))
-                que.append((dx,dy))
+mw[0][0] = 0
+while(len(que)>0):
+    x,y = que.pop(0)
+    if not (x,y) in vis:
+        for dx,dy in D:
+            if 0<=x+dx<len(m) and 0<=y+dy<len(m[0]):
+                if mw[x][y] + m[dx+x][dy+y] < mw[dx+x][dy+y]:
+                    mw[dx+x][dy+y] =  mw[x][y] + m[dx+x][dy+y]
+                    move[dx+x][dy+y] = invert((dx,dy))
+                que.append((dx+x,dy+y))
+    vis.append((x,y))
 
-
-for l in m2:
+for l in mw:
     print(l)
+for l in move:
+    print(l)
+
+printLook = {
+    (-1,0) :"v",
+    (1,0) :"^",
+    (0,-1) :"<",
+    (0,1) :">",
+    (0,0) :"#"
+}
+
+for i in range(len(mVis)):
+    for k in range(len(mVis[0])):
+        print(printLook[move[i][k]],"",end="")
+    print("")
