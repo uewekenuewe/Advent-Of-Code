@@ -65,6 +65,11 @@ for i in range(0,len(hail)-1):
             if inbound2d(interSec,low,up ): #and interSec.z >= 0:
                 ans1+=1
 
+maxV = point(0,0,0)
+for i in range(len(hail)):
+    if hail[0][i].x > maxV.x:
+        maxV.x = hail[i][0].x
+
 
 print("------")
 print("ans1:", ans1)
