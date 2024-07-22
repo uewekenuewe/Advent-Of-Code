@@ -44,6 +44,7 @@ q2 = [(s,m,[])]
 vQue = []
 ans1 = [0]
 
+mCpy = copy.deepcopy(m)
 
 ii  = 0
 while(len(q2)>0):
@@ -82,13 +83,31 @@ while(len(q2)>0):
                 q2.append((s3,m3,v3))
         
 
+
                     
+mCpy = np.array(mCpy)
+mCpy[s[0]][s[1]] = 'X'
+mCpy[e[0]][e[1]] = 'X'
+wayPoints = [s,e]
+
+for x in range(mCpy.shape[0]):
+    for y in range(mCpy.shape[0]):
+        cnt = 0
+        for xx,yy in d:
+            dx = x+xx
+            dy = y+yy 
+            if 0<= dx < mCpy.shape[0] and 0 <= dy < mCpy.shape[1]:
+                if mCpy[dx][dy] in ['v','>','<']:
+                    cnt += 1 
+        if cnt > 1 and mCpy[x][y] == '.':
+            mCpy[x][y] = 'X'
+            wayPoints.append([x,y])
+
+for r in mCpy:
+    print(''.join(r.tolist()))
 
 
-
-
-
-
+print(wayPoints)
 
 
 
