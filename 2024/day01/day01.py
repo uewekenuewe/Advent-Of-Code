@@ -24,7 +24,6 @@ l1 = sorted(l1)
 l2 = sorted(l2)
 
 for i in range(len(l1)):
-    print(l1[i],l2[i])
     ans1 += abs(l1[i]-l2[i])
 
 l22 = {}
