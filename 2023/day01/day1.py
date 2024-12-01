@@ -1,6 +1,6 @@
 # Using readlines()
 import re
-file1 = open('day1-ex.in', 'r')
+#file1 = open('day1-ex.in', 'r')
 file1 = open('day1.in', 'r')
 Lines = file1.readlines()
 arr = []
