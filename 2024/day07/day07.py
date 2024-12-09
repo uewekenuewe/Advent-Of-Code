@@ -15,7 +15,7 @@ else:
 lines = [l.strip() for l in f.readlines()]
 
 def evalLineA(l):
-    if type(l[1]) == int or len(l[1]) == 1:
+    if type(l[1]) == int or len(l[1]) == 1 or l[0] < l[1][0]:
         if l[0] == l[1][0]:
             return True
         else:
@@ -32,7 +32,7 @@ def evalLineA(l):
         return False
 
 def evalLineB(l):
-    if type(l[1]) == int or len(l[1]) == 1:
+    if type(l[1]) == int or len(l[1]) == 1 or l[0] < l[1][0]:
         if l[0] == l[1][0]:
             return True
         else:
