@@ -123,5 +123,3 @@ for a in area:
 print("------")
 print("ans1:", ans1)
 print("ans2:", ans2)
-
-
