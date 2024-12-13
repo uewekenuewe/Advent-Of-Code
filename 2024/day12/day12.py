@@ -4,8 +4,9 @@ import sys
 import numpy as np
 import copy 
 from math import sqrt
-from shapely import Polygon
-
+from collections import deque
+import shapely.geometry
+import cv2
 
 ans1 = 0
 ans2 = 0
@@ -29,7 +30,7 @@ m = np.array(m)
 
 
 dd1 = ((-1,-1),(1,1),(-1,1),(1,-1),(0,-1),(0,1),(1,0),(-1,0))
-dd2 = ((0,-1),(0,1),(1,0),(-1,0))
+dd2 = ((-1,0),(0,1),(1,0),(0,-1))
 def findArea(p):
     x,y = copy.deepcopy(p)
     vv = m[x][y]
@@ -70,7 +71,29 @@ def getPerimeter(a):
 
     return r
 
+def checkDirection(dd,pp):
+    xx,yy = pp
+    dx,dy = dd
+    dx+=xx
+    dy+=yy
+    return 0<=dx<len(m) and 0<=dy<len(m[0]) and m[dx][dy] == m[xx][yy]
 
+def getCorner(a):
+    x,y = a[0]
+    r = 0
+    for x,y in a:
+        corners = 0
+        for ind in range(len(dd2)):
+            d1 = dd2[ind]
+            d2 = dd2[(ind+1) %4]
+            if not checkDirection(d1,(x,y)) and not checkDirection(d2,(x,y)):
+                corners += 1
+            d3 = d1[0]+d2[0],d1[1]+d2[1]
+            if checkDirection(d1,(x,y)) and checkDirection(d2,(x,y)) and not checkDirection(d3,(x,y)):
+                corners += 1
+        r+= corners
+
+    return r
 
 globVis = []
 for i in range(len(m)):
@@ -87,7 +110,16 @@ for a in area:
     for x in area[a]:
         ans1 += (getPerimeter(x)*len(x))
         r += (getPerimeter(x)*len(x))
-    print(a,r,area[a])
+
+
+
+
+
+
+for a in area:
+    for x in area[a]:
+        ans2 += len(x) * getCorner(x)
+
 print("------")
 print("ans1:", ans1)
 print("ans2:", ans2)
