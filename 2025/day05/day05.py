@@ -30,55 +30,31 @@ for f in fresh:
             ans1+=1
             break
 
-
 def combine_range(rr1,rr2):
     l1,r1 = rr1
     l2,r2 = rr2
     if l1 <= l2 and r1>=r2:
-        #print("case1")
         return rr1
     if l2 <= l1 and r2>=r1:
-        #print("case2")
         return rr2
     if l1 <= l2 and r1>=l2 and r2>=r1:
-        #print("case3")
         return (l1,r2)
     if l2 <= l1 and r2>=l1 and r1>=r2:
-        #print("case4")
         return (l2,r1)
-
     return -1
 
-
-
-for _ in range(1000):
-    ranges_new = []
-    combine = []
-    stop = False
-    for i in range(len(ranges)):
-        for k in range(i+1,len(ranges)):
-            xo = combine_range(ranges[i],ranges[k])
-            if xo != -1:
-                combine.append(i)
-                combine.append(k)
-                stop = True
-                break
-        if stop:
-            break
-    if len(combine) != 2:
-        break
-    for i in range(len(ranges)):
-        if i not in combine:
-            ranges_new.append(ranges[i])
-    ranges_new.append(combine_range(ranges[combine[0]],ranges[combine[1]]))
-
-    ranges = copy.deepcopy(ranges_new)
-    print(ranges_new)
-
+ranges = sorted(ranges)
+for i in range(len(ranges)):
+    for k in range(i+1,len(ranges)):
+        xo = combine_range(ranges[i],ranges[k])
+        if xo != -1:
+            ranges[k] = (0,0)
+            ranges[i] = xo
 
 ans2 = 0
 for l,r in ranges:
-    ans2+= abs(r-l)+1
+    if (l,r) != (0,0):
+        ans2+= abs(r-l)+1
 
 # examples to test combine range function 
 #print(combine_range((1,10),(5,6)))
@@ -91,7 +67,7 @@ for l,r in ranges:
 #print(combine_range((10,14),(16,20)))
 #print(combine_range((16,20),(12,18)))
 print("------")
-print("ans1:", ans1)
-print("ans2:", ans2) # 440124610699592 falsch
+print("ans1:", ans1,ans1==698)
+print("ans2:", ans2,ans2==352807801032167) # 440124610699592 falsch
 
 
