@@ -69,63 +69,32 @@ for l in lines:
         operations.append(l)
     else:
         num.append(re.findall(r"\d+",l))
-lines2 = copy.deepcopy(lines[:-1])
 
+lines = copy.deepcopy(lines[:-1])
+ll_tmp = []
+for i in range(len(lines)):
+    ll_tmp.append([x for x in lines[i]])
 
-lines3 = []
-inds = []
-for i in range(len(lines2[0])):
-    curr = ""
-    for k in range(len(lines2)):
-        curr += lines2[k][i]
-    lines3.append(curr)
-    if curr.count(" ") == len(curr):
-        inds.append(i)
-
-lines4 = []
-for l in lines2:
-    xo = [x for x in l]
-    for i in inds:
-        xo[i] = "|"
-    print("".join(xo).replace(" ","0"))
-    lines4.append("".join(xo).replace(" ","0"))
-
-operations= operations[0].split()
-print(operations)
-kk = len(operations)-1
+operations = operations[0].split()
+ll_tmp = np.array(ll_tmp)
+ind = 0
 rr = 0
-if operations[kk] == "*":
+if operations[ind] == "*":
     rr = 1
-
-for i in range(1,len(lines4[0])+1):
-    curr = ""
-    for k in range(len(lines4)):
-        curr += lines4[k][-1*i]
-    if not "|" in curr:
-        if "0" in curr:
-            curr= curr.replace("0","")
-        print(int(curr))
-        if operations[kk] == "*":
-            rr *= int(curr)
-        else:
-            rr += int(curr)
-    else:
+for i in range(len(ll_tmp[0])):
+    value = "".join(ll_tmp[:,i])
+    if value.count(" ") == len(value):
+        ind += 1
         ans2 += rr
-        print("--",rr,operations[kk])
-        kk -= 1
         rr = 0
-        if operations[kk] == "*":
+        if operations[ind] == "*":
             rr = 1
-
-ans2 += rr
-print("--",rr,operations[kk])
-
-
-
-
-
-
-print(lines4)
+    else:
+        if operations[ind] == "*":
+            rr *= int(value)
+        else:
+            rr+= int(value)
+ans2+=rr
 print("------")
-print("ans1:", ans1)
-print("ans2:", ans2)
+print("ans1:", ans1,ans1 == 4580995422905)
+print("ans2:", ans2,ans2 == 10875057285868)
